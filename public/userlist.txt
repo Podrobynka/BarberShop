@@ -30,3 +30,5 @@ User: vb. Phone: dfgf. Date and time: dffg. Barber: Walter White. Color:
 User: vb. Phone: dfgf. Date and time: dffg. Barber: Walter White. Color:
 User: vb. Phone: dfgf. Date and time: dffg. Barber: Walter White. Color:
 User: dfhjhkl;. Phone: fhjkl. Date and time: ffghjk. Barber: Jessie Pinkman. Color: #f83a22
+User: jk. Phone: sdfg. Date and time: df. Barber: Gus Fring. Color: #ac725e
+User: jk. Phone: sdfg. Date and time: df. Barber: Gus Fring. Color: #ac725e
