@@ -4,9 +4,13 @@ require 'pony'
 require 'sqlite3'
 
 # require 'sinatra/reloader'
+def getting_db
+  SQLite3::Database.new 'barbershop.db'
+end
+
 configure do
-  @db = SQLite3::Database.new 'Barbershop.db'
-  @db.execute 'CREATE TABLE IF NOT EXISTS
+  db = getting_db
+  db.execute 'CREATE TABLE IF NOT EXISTS
     "users"
     (
       "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -62,9 +66,19 @@ post '/visit' do
     end
   end
 
-  f = File.open('public/userlist.txt', 'a')
-  f.write "\nUser: #{@username}. Phone: #{@phone}. Date and time: #{@datetime}. Barber: #{@barber}. Color: #{@color}"
-  f.close
+  db = getting_db
+  db.execute 'insert into
+    users
+    (
+      username,
+      phone,
+      datestamp,
+      barber,
+      color
+    )
+    values
+    (?, ?, ?, ?, ?)', [@username, @phone, @datetime, @barber, @color]
+
   @title = 'Thank you!'
   @message = "Dear #{@username}, we'll waiting for you at #{@datetime}."
   erb :visit
