@@ -84,6 +84,13 @@ post '/visit' do
   erb :visit
 end
 
+get '/showusers' do
+  db = getting_db
+  db.results_as_hash = true
+  @usersdb = db.execute 'select * from users order by id desc'
+  erb :showusers
+end
+
 get '/contacts' do
   erb :contacts
 end
