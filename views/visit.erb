@@ -10,10 +10,25 @@
     <label>Your phone:</label>
     <input name="phone" type="text" class="form-control" placeholder="Enter you phone" value="<%=@phone%>">
   </div>
-  <div class="form-group">
-    <label>When you`ll come?</label>
-    <input name="datetime" type="text" class="form-control" placeholder="Enter date and time" value="<%=@datetime%>">
-  </div>
+  <!-- <div class="form-group"> -->
+    <!-- <input name="datetime" type="text" class="form-control" placeholder="Enter date and time" value="<%=@datetime%>"> -->
+    <div class="container">
+      <div class="row">
+        <div class='col-sm-6'>
+          <div class="form-group">
+              <label>When you`ll come?</label>
+            <div class='input-group date' id='datetimepicker2'>
+              <input name="datetime" type='text' class="form-control" placeholder="Enter date and time" value="<%=@datetime%>"/>
+              <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!-- </div> -->
+
   <div class="form-group">
     <label>Select barber:</label>
     <select name="barber" class="form-control">
@@ -63,5 +78,11 @@
 <script type="text/javascript">
 $(function(){
   $('select[name="colorpicker"]').simplecolorpicker();
+  $('#datetimepicker2').datetimepicker({
+    locale: 'ua',
+    // inline: true,
+    // sideBySide: true
+    // format: 'DD/MM/YYYY'
+  });
 });
 </script>
