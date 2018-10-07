@@ -32,9 +32,9 @@
   <div class="form-group">
     <label>Select barber:</label>
     <select name="barber" class="form-control">
-      <option <%= @barber == 'Walter White' ? 'selected' : '' %>>Walter White</option>
-      <option <%= @barber == 'Jessie Pinkman' ? 'selected' : '' %>>Jessie Pinkman</option>
-      <option <%= @barber == 'Gus Fring' ? 'selected' : '' %>>Gus Fring</option>
+    <% @barbersdb.each do |row| %>
+      <option><%= row["barber"] %></option>
+    <% end %>
     </select>
   </div>
   <div class="form-group">

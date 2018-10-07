@@ -20,6 +20,13 @@ configure do
       "barber" TEXT,
       "color" TEXT
     )'
+  # db = getting_db
+  db.execute 'CREATE TABLE IF NOT EXISTS
+    "barbers"
+    (
+      "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+      "barber" TEXT
+    )'
 end
 
 get '/' do
@@ -44,7 +51,28 @@ get '/about' do
   erb :about
 end
 
+get '/admin' do
+  erb :admin
+end
+
+post '/admin' do
+  @barber = params[:barber]
+  db = getting_db
+  db.execute 'insert into
+    barbers
+    (
+      barber
+    )
+    values
+    (?)', [@barber]
+
+  erb :admin
+end
+
 get '/visit' do
+  db = getting_db
+  db.results_as_hash = true
+  @barbersdb = db.execute 'select * from barbers order by id desc'
   erb :visit
 end
 
@@ -65,6 +93,10 @@ post '/visit' do
       return erb :visit
     end
   end
+
+  db = getting_db
+  db.results_as_hash = true
+  @barbersdb = db.execute 'select * from barbers order by id desc'
 
   db = getting_db
   db.execute 'insert into
