@@ -80,12 +80,17 @@ post '/visit' do
   @username = params[:username]
   @phone = params[:phone]
   @datetime = params[:datetime]
-  @barber = params[:barber]
-  @color = params[:colorpicker]
+  barber = params[:barber]
+  color = params[:colorpicker]
 
-  hh = { username: 'Enter your name',
-         phone: 'Enter your phone',
-         datetime: 'Enter correct date and time' }
+  db = getting_db
+  db.results_as_hash = true
+  @barbersdb = db.execute 'select * from barbers order by id desc'
+  hh = {
+    username: 'Enter your name',
+    phone: 'Enter your phone',
+    datetime: 'Enter correct date and time'
+  }
 
   hh.each do |key, _value|
     if params[key] == ''
@@ -93,12 +98,7 @@ post '/visit' do
       return erb :visit
     end
   end
-
-  db = getting_db
-  db.results_as_hash = true
-  @barbersdb = db.execute 'select * from barbers order by id desc'
-
-  db = getting_db
+  # db = getting_db
   db.execute 'insert into
     users
     (
@@ -109,7 +109,7 @@ post '/visit' do
       color
     )
     values
-    (?, ?, ?, ?, ?)', [@username, @phone, @datetime, @barber, @color]
+    (?, ?, ?, ?, ?)', [@username, @phone, @datetime, barber, color]
 
   @title = 'Thank you!'
   @message = "Dear #{@username}, we'll waiting for you at #{@datetime}."
