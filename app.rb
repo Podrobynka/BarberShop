@@ -52,12 +52,23 @@ get '/about' do
 end
 
 get '/admin' do
+  db = getting_db
+  db.results_as_hash = true
+  @barbersdb = db.execute 'select * from barbers'
   erb :admin
 end
 
 post '/admin' do
   @barber = params[:barber]
   db = getting_db
+  db.results_as_hash = true
+  @barbersdb = db.execute 'select * from barbers'
+  @barbersdb.each do |row|
+    if row['barber'] == @barber
+      @error = 'This barber already exist'
+      return erb :admin
+    end
+  end
   db.execute 'insert into
     barbers
     (
@@ -65,7 +76,6 @@ post '/admin' do
     )
     values
     (?)', [@barber]
-
   erb :admin
 end
 
