@@ -10,7 +10,8 @@ end
 
 configure do
   db = getting_db
-  db.execute 'CREATE TABLE IF NOT EXISTS
+  db.execute %(
+    CREATE TABLE IF NOT EXISTS
     "users"
     (
       "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,14 +20,17 @@ configure do
       "datestamp" TEXT,
       "barber" TEXT,
       "color" TEXT
-    )'
+    )
+  )
   # db = getting_db
-  db.execute 'CREATE TABLE IF NOT EXISTS
+  db.execute %(
+    CREATE TABLE IF NOT EXISTS
     "barbers"
     (
       "id" INTEGER PRIMARY KEY AUTOINCREMENT,
       "barber" TEXT
-    )'
+    )
+  )
 end
 
 get '/' do
@@ -60,22 +64,19 @@ end
 
 post '/admin' do
   @barber = params[:barber]
+
   db = getting_db
   db.results_as_hash = true
   @barbersdb = db.execute 'select * from barbers'
+
   @barbersdb.each do |row|
     if row['barber'] == @barber
-      @error = 'This barber already exist'
+      @error = 'The barber already exists'
       return erb :admin
     end
   end
-  db.execute 'insert into
-    barbers
-    (
-      barber
-    )
-    values
-    (?)', [@barber]
+
+  db.execute 'insert into barbers (barber) values (?)', @barber
   erb :admin
 end
 
@@ -109,7 +110,8 @@ post '/visit' do
     end
   end
   # db = getting_db
-  db.execute 'insert into
+  db.execute %(
+    insert into
     users
     (
       username,
@@ -119,7 +121,8 @@ post '/visit' do
       color
     )
     values
-    (?, ?, ?, ?, ?)', [@username, @phone, @datetime, barber, color]
+    (?, ?, ?, ?, ?)
+  ), @username, @phone, @datetime, barber, color
 
   @title = 'Thank you!'
   @message = "Dear #{@username}, we'll waiting for you at #{@datetime}."
