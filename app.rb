@@ -8,6 +8,10 @@ def getting_db
   SQLite3::Database.new 'barbershop.db'
 end
 
+def barber_not_exists?(dbase, name)
+  dbase.execute('select * from barbers where barber=?', name).empty?
+end
+
 configure do
   db = getting_db
   db.execute %(
@@ -67,15 +71,13 @@ post '/admin' do
 
   db = getting_db
   db.results_as_hash = true
-  @barbersdb = db.execute 'select * from barbers'
 
-  @barbersdb.each do |row|
-    next if row['barber'] != @barber
+  if barber_not_exists?(db, @barber)
+    db.execute 'insert into barbers (barber) values (?)', @barber
+  else
     @error = 'The barber already exists'
-    return erb :admin
   end
 
-  db.execute 'insert into barbers (barber) values (?)', @barber
   erb :admin
 end
 
@@ -108,7 +110,7 @@ post '/visit' do
       return erb :visit
     end
   end
-  # db = getting_db
+
   db.execute %(
     insert into
     users
