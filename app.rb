@@ -12,9 +12,16 @@ def barber_not_exists?(dbase, name)
   dbase.execute('select * from barbers where barber=?', name).empty?
 end
 
+before do
+  @db = getting_db
+  @db.results_as_hash = true
+  @barbersdb = @db.execute 'select * from barbers order by id desc'
+end
+
 configure do
-  db = getting_db
-  db.execute %(
+  @db = getting_db
+
+  @db.execute %(
     CREATE TABLE IF NOT EXISTS
     "users"
     (
@@ -26,8 +33,8 @@ configure do
       "color" TEXT
     )
   )
-  # db = getting_db
-  db.execute %(
+
+  @db.execute %(
     CREATE TABLE IF NOT EXISTS
     "barbers"
     (
@@ -60,20 +67,14 @@ get '/about' do
 end
 
 get '/admin' do
-  db = getting_db
-  db.results_as_hash = true
-  @barbersdb = db.execute 'select * from barbers'
   erb :admin
 end
 
 post '/admin' do
   @barber = params[:barber]
 
-  db = getting_db
-  db.results_as_hash = true
-
-  if barber_not_exists?(db, @barber)
-    db.execute 'insert into barbers (barber) values (?)', @barber
+  if barber_not_exists?(@db, @barber)
+    @db.execute 'insert into barbers (barber) values (?)', @barber
   else
     @error = 'The barber already exists'
   end
@@ -82,9 +83,6 @@ post '/admin' do
 end
 
 get '/visit' do
-  db = getting_db
-  db.results_as_hash = true
-  @barbersdb = db.execute 'select * from barbers order by id desc'
   erb :visit
 end
 
@@ -95,9 +93,6 @@ post '/visit' do
   barber = params[:barber]
   color = params[:colorpicker]
 
-  db = getting_db
-  db.results_as_hash = true
-  @barbersdb = db.execute 'select * from barbers order by id desc'
   hh = {
     username: 'Enter your name',
     phone: 'Enter your phone',
@@ -111,7 +106,7 @@ post '/visit' do
     end
   end
 
-  db.execute %(
+  @db.execute %(
     insert into
     users
     (
@@ -131,9 +126,7 @@ post '/visit' do
 end
 
 get '/showusers' do
-  db = getting_db
-  db.results_as_hash = true
-  @usersdb = db.execute 'select * from users order by id desc'
+  @usersdb = @db.execute 'select * from users order by id desc'
   erb :showusers
 end
 
