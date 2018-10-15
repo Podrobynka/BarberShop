@@ -70,10 +70,9 @@ post '/admin' do
   @barbersdb = db.execute 'select * from barbers'
 
   @barbersdb.each do |row|
-    if row['barber'] == @barber
-      @error = 'The barber already exists'
-      return erb :admin
-    end
+    next if row['barber'] != @barber
+    @error = 'The barber already exists'
+    return erb :admin
   end
 
   db.execute 'insert into barbers (barber) values (?)', @barber
